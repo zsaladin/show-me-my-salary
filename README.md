@@ -7,6 +7,7 @@ $ git clone https://github.com/zsaladin/show-me-my-salary
 $ cd show-me-my-salary
 $ virtualenv venv --python=python3.6
 $ source venv/bin/activate
+$ pip install -r requirements.txt
 $ python show_me_my_salary.py '2017000012.htm' 19861212
 ```
 
