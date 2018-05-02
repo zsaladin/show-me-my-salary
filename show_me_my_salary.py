@@ -1,4 +1,6 @@
 import hashlib
+import platform
+import subprocess
 import sys
 
 from os import path
@@ -23,3 +25,14 @@ new_file_path = path.join(dir_path, new_file_name)
 with open(new_file_path, 'w', encoding='utf-8') as f:
     f.write(decrypted)
 
+print(f"'{new_file_path}' was created.")
+
+try:
+    abs_file_path = path.abspath(new_file_path)
+
+    if platform.system().lower() == 'darwin':
+        subprocess.call(['open', '--reveal', abs_file_path])
+    elif platform.system().lower() == 'windows':
+        subprocess.Popen(r'explorer /select,' + abs_file_path)
+except Exception as e:
+    pass
