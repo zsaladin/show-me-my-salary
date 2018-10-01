@@ -8,10 +8,15 @@ $ cd show-me-my-salary
 $ virtualenv venv -p python3
 $ source venv/bin/activate
 (venv) $ pip install -r requirements.txt
-(venv) $ python show_me_my_salary.py "2017000012.htm" 19861212
+(venv) $ python show_me_my_salary.py --help     # show usage
+(venv) $ python show_me_my_salary.py 2017000012.htm
 ```
 
 위와 같은 커맨드를 사용하면 해당 htm 파일이 있던 경로에 복호화 된 명세서가 생성 됩니다.
 
 ## Requirements
 - python3.6 or above
+- wkhtmltopdf
+ ```
+ $ brew cask install wkhtmltopdf
+ ```
