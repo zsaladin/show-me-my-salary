@@ -10,8 +10,8 @@ def convert_html(decrypted_html, new_html_file):
     print(f"'{new_html_file}' was created.")
 
 
-def convert_pdf(decrypted_html, new_pdf_file):
-    return pdfkit.from_string(decrypted_html, new_pdf_file)
+def convert_pdf(decrypted_html, new_pdf_file, config=None):
+    return pdfkit.from_string(decrypted_html, new_pdf_file, configuration=config)
 
 
 def decrypt_html(file_path, password):
@@ -20,6 +20,9 @@ def decrypt_html(file_path, password):
         title, data = get_parsed_data(data)
         iv, salt, encrypted = get_encrypted(data)
 
-    decrypted = get_decrypted(encrypted, iv, salt, password)
+    try:
+        decrypted = get_decrypted(encrypted, iv, salt, password)
+    except UnicodeDecodeError as e:
+        raise e
 
     return title, decrypted

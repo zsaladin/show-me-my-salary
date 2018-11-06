@@ -1,4 +1,5 @@
 import click
+import os
 import platform
 import subprocess
 
@@ -14,26 +15,25 @@ def main(filename, password, pdf):
     title, decrypted_html = decrypt_html(filename, password)
 
     dir_path, file_name = path.split(filename)
+    dir_abs_path = path.join(os.getcwd(), dir_path)
     basename, ext = path.splitext(file_name)
+
+    title = title.replace(' ', '_')
 
     if pdf:
         click.echo("convert to pdf")
-        new_file_name = title + '.pdf'
+        new_file_name = path.join(dir_abs_path, title + '.pdf')
         convert_pdf(decrypted_html, new_file_name)
     else:
         click.echo("convert to html")
-        new_file_name = title + ext
+        new_file_name = path.join(dir_abs_path, title + ext)
         convert_html(decrypted_html, new_file_name)
 
-    new_file_path = path.join(dir_path, new_file_name)
-
     try:
-        abs_file_path = path.abspath(new_file_path)
-
         if platform.system().lower() == 'darwin':
-            subprocess.call(['open', '--reveal', abs_file_path])
+            subprocess.call(['open', '--reveal', new_file_name])
         elif platform.system().lower() == 'windows':
-            subprocess.Popen(r'explorer /select,' + abs_file_path)
+            subprocess.Popen(r'explorer /select,' + new_file_name)
     except Exception as e:
         pass
 

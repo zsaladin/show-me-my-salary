@@ -1,5 +1,5 @@
-beautifulsoup4=4.6.3
-pyasn1=0.4.4
+beautifulsoup4==4.6.3
+pyasn1==0.4.4
 pdfkit==0.6.1
-Click=7.0
+Click==7.0
 PySide2==5.11.2
