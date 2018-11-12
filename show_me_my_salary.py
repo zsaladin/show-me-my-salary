@@ -1,32 +1,10 @@
 import click
+import os
 import platform
 import subprocess
-import pdfkit
 
 from os import path
-from utils import get_parsed_data, get_encrypted, get_decrypted
-
-
-def convert_html(decrypted_html, new_html_file):
-    with open(new_html_file, 'w', encoding='utf-8') as f:
-        f.write(decrypted_html)
-
-    print(f"'{new_html_file}' was created.")
-
-
-def convert_pdf(decrypted_html, new_pdf_file):
-    pdfkit.from_string(decrypted_html, new_pdf_file)
-
-
-def decrypt_html(file_path, password):
-    with open(file_path, encoding='utf-8') as f:
-        data = ''.join(f.readlines())
-        title, data = get_parsed_data(data)
-        iv, salt, encrypted = get_encrypted(data)
-
-    decrypted = get_decrypted(encrypted, iv, salt, password)
-
-    return title, decrypted
+from converter import decrypt_html, convert_html, convert_pdf
 
 
 @click.command('salary')
@@ -37,26 +15,25 @@ def main(filename, password, pdf):
     title, decrypted_html = decrypt_html(filename, password)
 
     dir_path, file_name = path.split(filename)
+    dir_abs_path = path.join(os.getcwd(), dir_path)
     basename, ext = path.splitext(file_name)
+
+    title = title.replace(' ', '_')
 
     if pdf:
         click.echo("convert to pdf")
-        new_file_name = title + '.pdf'
+        new_file_name = path.join(dir_abs_path, title + '.pdf')
         convert_pdf(decrypted_html, new_file_name)
     else:
         click.echo("convert to html")
-        new_file_name = title + ext
+        new_file_name = path.join(dir_abs_path, title + ext)
         convert_html(decrypted_html, new_file_name)
 
-    new_file_path = path.join(dir_path, new_file_name)
-
     try:
-        abs_file_path = path.abspath(new_file_path)
-
         if platform.system().lower() == 'darwin':
-            subprocess.call(['open', '--reveal', abs_file_path])
+            subprocess.call(['open', '--reveal', new_file_name])
         elif platform.system().lower() == 'windows':
-            subprocess.Popen(r'explorer /select,' + abs_file_path)
+            subprocess.Popen(r'explorer /select,' + new_file_name)
     except Exception as e:
         pass
 

@@ -14,6 +14,6 @@ def get_decrypted(encrypted, iv, salt, password):
         decrypted = decrypted.decode('utf-16LE')
     except UnicodeDecodeError as e:
         print(f'decode failed. check your password : {password}')
-        raise
+        raise e
 
     return decrypted
